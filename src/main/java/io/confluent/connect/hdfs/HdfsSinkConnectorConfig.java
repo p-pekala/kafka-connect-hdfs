@@ -1,16 +1,16 @@
-/**
- * Copyright 2015 Confluent Inc.
+/*
+ * Copyright 2018 Confluent Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Confluent Community License; you may not use this file
+ * except in compliance with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.confluent.io/confluent-community-license
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- **/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OF ANY KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 
 package io.confluent.connect.hdfs;
 
@@ -104,6 +104,11 @@ public class HdfsSinkConnectorConfig extends StorageSinkConnectorConfig {
   public static final String HDFS_NAMENODE_PRINCIPAL_DEFAULT = "";
   private static final String HDFS_NAMENODE_PRINCIPAL_DOC = "The principal for HDFS Namenode.";
   private static final String HDFS_NAMENODE_PRINCIPAL_DISPLAY = "HDFS NameNode Kerberos Principal";
+
+  public static final String MULTI_SCHEMA_SUPPORT_CONFIG = "multi.schema.support";
+  public static final String MULTI_SCHEMA_SUPPORT_DOC = "Multiple schema support on one topic.";
+  public static final boolean MULTI_SCHEMA_SUPPORT_DEFAULT = false;
+  public static final String MULTI_SCHEMA_SUPPORT_DISPLAY = "Multiple schema support";
 
   public static final String KERBEROS_TICKET_RENEW_PERIOD_MS_CONFIG =
       "kerberos.ticket.renew.period.ms";
@@ -202,6 +207,10 @@ public class HdfsSinkConnectorConfig extends StorageSinkConnectorConfig {
     }
 
     {
+      createMultiSchemaConfigDefinition(configDef);
+    }
+
+    {
       final String group = "Security";
       int orderInGroup = 0;
       // Define Security configuration group
@@ -284,6 +293,19 @@ public class HdfsSinkConnectorConfig extends StorageSinkConnectorConfig {
       configDef.define(key);
     }
     return configDef;
+  }
+
+  private static void createMultiSchemaConfigDefinition(ConfigDef configDef) {
+    configDef.define(
+        MULTI_SCHEMA_SUPPORT_CONFIG,
+        Type.BOOLEAN,
+        MULTI_SCHEMA_SUPPORT_DEFAULT,
+        Importance.LOW,
+        MULTI_SCHEMA_SUPPORT_DOC,
+        "Other", 1,
+        Width.SHORT,
+        MULTI_SCHEMA_SUPPORT_DISPLAY
+    );
   }
 
   private final String name;
